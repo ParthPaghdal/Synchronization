@@ -50,12 +50,12 @@ void* kid(void* args) {
     while(true){
       //Extract a candy item from the bounded buffer
       candy_t *processedCandy = bbuff_blocking_extract();
-     // printf("factory_number = %d\n", processedCandy->factory_number);
+     
       double lifetime = current_time_in_ms() - processedCandy->creation_ts_ms;
-      //printf("lifetime = %f\n", lifetime);
+
       stats_record_consumed(processedCandy->factory_number, lifetime);
       // process the item
-      // printf("Candy from factory %i removed from buffer\n",processedCandy->factory_number);
+      
       //sleep for 0-1 seconds
       int waitTime = rand() % 2;
       sleep(waitTime);
@@ -70,6 +70,7 @@ int main(int argc, char *argv[]) {
     printf("Invalid Arguments\n");
     exit(1);
   }
+
   int factoryCount = atoi(argv[1]);
   int kidCount = atoi(argv[2]);
   int seconds = atoi(argv[3]);
@@ -88,14 +89,12 @@ int main(int argc, char *argv[]) {
 
   // 3.  Launch candy-factory threads
     for(int i = 0; i< factoryCount; i++) {
-      //factoryNumber++;
       factoryNumber[i] = i;
       int success;
       success = pthread_create(&tid[i], NULL, factory, &factoryNumber[i]);
       if(success!=0){
         printf("Error creating thread %d\n", i);
       }
-      //factoryNumber++;
     }
 
   // 4.  Launch kid threads
@@ -111,10 +110,11 @@ int main(int argc, char *argv[]) {
 
   // 6.  Stop candy-factory threads
   signal = false;
+
   for(int i = 0; i< factoryCount; i++){
-    //pthread_cancel(tid[i]);
     pthread_join(tid[i], NULL);
   }
+  
   // 7.  Wait until there is no more candies
   while(!bbuff_is_empty()){
     printf("Waiting for all candies to be consumed");
