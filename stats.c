@@ -38,14 +38,14 @@ void stats_cleanup(void){
 
 void stats_record_produced(int factory_number){
     sem_wait(&statsmutex);
-    //factory_number--;
+
     factory_stats[factory_number].made++;
     sem_post(&statsmutex);
 }
 
 void stats_record_consumed(int factory_number, double delay_in_ms){
     sem_wait(&statsmutex);
-    //factory_number--;
+    
     factory_stats[factory_number].eaten++;
     if(factory_stats[factory_number].maxDelay==0 && factory_stats[factory_number].minDelay==0){
         factory_stats[factory_number].minDelay = delay_in_ms;
@@ -62,7 +62,7 @@ void stats_record_consumed(int factory_number, double delay_in_ms){
         if(factory_stats[factory_number].maxDelay < delay_in_ms){
             factory_stats[factory_number].maxDelay = delay_in_ms;
         }
-        //printf("Factoru number = %d\n", factory_stats[0])
+        
 
     }
     sem_post(&statsmutex);
